@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Plus, Minus, Check } from "lucide-react";
+import { X, Plus, Minus } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/CartContext";
 import { useStore } from "@/lib/StoreContext";

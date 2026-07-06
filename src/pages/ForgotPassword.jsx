@@ -16,7 +16,7 @@ export default function ForgotPassword() {
     e.preventDefault();
     setLoading(true);
     try {
-      await authClient.auth.resetPasswordRequest(email);
+      await authClient.requestPasswordReset(email);
     } catch {
       // Always show success regardless
     } finally {

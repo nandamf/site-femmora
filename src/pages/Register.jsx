@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserPlus, Mail, Lock, Loader2 } from "lucide-react";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-out";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import { toast } from "@/components/ui/use-toast";
+import { getAuthErrorMessage, validatePassword } from "@/lib/authValidation";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -26,12 +27,17 @@ export default function Register() {
       setError("Passwords do not match");
       return;
     }
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
     setLoading(true);
     try {
-      await authClient.auth.register({ email, password });
+      await authClient.register(email, password);
       setShowOtp(true);
     } catch (err) {
-      setError(err.message || "Registration failed");
+      setError(getAuthErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -41,13 +47,10 @@ export default function Register() {
     setError("");
     setLoading(true);
     try {
-      const result = await authClient.auth.verifyOtp({ email, otpCode });
-      if (result?.access_token) {
-        authClient.auth.setToken(result.access_token);
-      }
+      await authClient.verifySignupOtp(email, otpCode);
       window.location.href = "/";
     } catch (err) {
-      setError(err.message || "Invalid verification code");
+      setError(getAuthErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -56,18 +59,20 @@ export default function Register() {
   const handleResend = async () => {
     setError("");
     try {
-      await authClient.auth.resendOtp(email);
+      await authClient.resendSignupOtp(email);
       toast({
         title: "Code sent",
         description: "Check your email for the new code.",
       });
     } catch (err) {
-      setError(err.message || "Failed to resend code");
+      setError(getAuthErrorMessage(err));
     }
   };
 
   const handleGoogle = () => {
-    authClient.auth.loginWithProvider("google", "/");
+    void authClient.loginWithGoogle("/").catch((err) => {
+      setError(getAuthErrorMessage(err));
+    });
   };
 
   if (showOtp) {

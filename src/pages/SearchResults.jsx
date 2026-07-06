@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { PRODUCTS } from "@/lib/products";
 import { normalizeSearchTerm } from "@/lib/utils";
-import { useStore } from "@/lib/StoreContext";
 import ProductCard from "@/components/store/ProductCard";
 import ProductModal from "@/components/store/ProductModal";
 import { CartProvider } from "@/lib/CartContext";

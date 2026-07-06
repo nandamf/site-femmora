@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { authClient } from "@/api/authClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,8 +7,14 @@ import { Label } from "@/components/ui/label";
 import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import { getAuthErrorMessage } from "@/lib/authValidation";
 
 export default function Login() {
+  const [searchParams] = useSearchParams();
+  const requestedRedirect = searchParams.get("redirect") || "/";
+  const redirect = requestedRedirect.startsWith("/") && !requestedRedirect.startsWith("//")
+    ? requestedRedirect
+    : "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,17 +25,19 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      await authClient.auth.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      await authClient.login(email, password);
+      window.location.href = redirect;
     } catch (err) {
-      setError(err.message || "Invalid email or password");
+      setError(getAuthErrorMessage(err));
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogle = () => {
-    authClient.auth.loginWithProvider("google", "/");
+    void authClient.loginWithGoogle(redirect).catch((err) => {
+      setError(getAuthErrorMessage(err));
+    });
   };
 
   return (
