@@ -5,7 +5,7 @@ export default function Hero() {
   return (
     <section id="top" className="relative w-full h-[85vh] min-h-[560px] overflow-hidden bg-parchment">
       <img
-        src="https://images.unsplash.com/photo-1495121605193-b116b5b09a5d?auto=format&fit=crop&w=1600&q=80"
+        src="https://intimissimi.vtexassets.com/assets/vtex.file-manager-graphql/images/778f2900-b8d5-489b-981a-542abbee59be___e4cfbbe28cd034a7c83092066d9ce537.jpg"
         alt="Mulher elegante em lingerie de renda bordô sob luz lateral suave em ambiente minimalista"
         className="absolute inset-0 w-full h-full object-cover object-center"
       />

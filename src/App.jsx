@@ -12,11 +12,12 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import AccessDenied from './pages/AccessDenied';
 import AdminRoute from './components/AdminRoute';
 // Add page imports here
 
 const AdminHome = lazy(() => import('./pages/AdminHome'));
+const AdminLayout = lazy(() => import('./modules/admin/AdminLayout'));
+const AccessDenied = lazy(() => import('./pages/AccessDenied'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth } = useAuth();
@@ -39,16 +40,18 @@ const AuthenticatedApp = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/acesso-negado" element={<AccessDenied />} />
+      <Route path="/acesso-negado" element={<Suspense fallback={<div className="p-8">Carregando...</div>}><AccessDenied /></Suspense>} />
       <Route element={<AdminRoute />}>
         <Route
           path="/admin"
           element={
             <Suspense fallback={<div className="p-8">Carregando...</div>}>
-              <AdminHome />
+              <AdminLayout />
             </Suspense>
           }
-        />
+        >
+          <Route index element={<Suspense fallback={<div className="p-8">Carregando...</div>}><AdminHome /></Suspense>} />
+        </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
