@@ -30,3 +30,14 @@ dist-ssr
 
 .env
 .vite
+
+# Python (backend)
+.venv
+__pycache__/
+*.pyc
+.pytest_cache
+.ruff_cache
+*.egg-info
+
+# Local scratch
+.tmp-chrome*/
